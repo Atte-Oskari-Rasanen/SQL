@@ -1,0 +1,408 @@
+https://tikape.mooc.fi/kevat-2022/
+https://sqltrainer.withmooc.fi/#1 
+Tehtävä 1
+Hae kaikkien elokuvien nimet.
+
+id	nimi	vuosi
+1	Lumikki	1937
+2	Fantasia	1940
+3	Pinocchio	1940
+4	Dumbo	1941
+5	Bambi	1942
+
+sqlite> CREATE TABLE elokuvat (id integer primary key, nimi text, vuosi integer);
+sqlite> insert into elokuvat (nimi, vuosi) values ('Lumikki', 1937);
+sqlite> insert into elokuvat (nimi, vuosi) values ('Fantasia', 1940);
+sqlite> insert into elokuvat (nimi, vuosi) values ('Pinocchio', 1940);
+sqlite> insert into elokuvat (nimi, vuosi) values ('Dumbo', 1941);
+sqlite> insert into elokuvat (nimi, vuosi) values ('Bambi', 1942);
+sqlite> Select * from elokuvat order by vuosi DESC;
+5|Bambi|1942
+4|Dumbo|1941
+2|Fantasia|1940
+3|Pinocchio|1940
+1|Lumikki|1937
+sqlite> select nimi from elokuvat;
+Lumikki
+Fantasia
+Pinocchio
+Dumbo
+Bambi
+
+
+T 2
+sqlite> Select nimi,vuosi from elokuvat;
+Lumikki|1937
+Fantasia|1940
+Pinocchio|1940
+Dumbo|1941
+Bambi|1942
+
+T3
+sqlite> Select nimi, vuosi from elokuvat where vuosi=1940;
+Fantasia|1940
+Pinocchio|1940
+
+T4
+sqlite> Select nimi, vuosi from elokuvat where vuosi<1940;
+Lumikki|1937
+
+T5
+eka päivitä taulukko:
+sqlite> update elokuvat set nimi='Peter Pan', vuosi= 1953 where id=4;
+sqlite> update elokuvat set nimi='Hiidenpata', vuosi= 1985 where id=5;
+sqlite> update elokuvat set nimi='Bambi', vuosi= 1942 where id=3;
+
+remember to put headers to the table so that you can write criteria based on them
+.headers on
+
+
+sqlite> select nimi from elokuvat where vuosi>=1940 and vuosi<=1950;
+Fantasia
+Bambi
+
+
+T6
+sqlite> select nimi from elokuvat where vuosi<1950 or vuosi>1980;
+Nimi
+Lumikki
+Fantasia
+Bambi
+Hiidenpata
+
+T7
+sqlite> select nimi from elokuvat where vuosi!=1940;
+Nimi
+Lumikki
+Dumbo
+Bambi
+
+T8
+sqlite> select nimi from elokuvat order by nimi;
+Nimi
+Bambi
+Dumbo
+Fantasia
+Lumikki
+Pinocchio
+
+T9
+sqlite> select nimi from elokuvat order by nimi desc;
+Nimi
+Pinocchio
+Lumikki
+Fantasia
+Dumbo
+Bambi
+
+T10
+sqlite> select * from elokuvat order by vuosi desc, nimi;
+id,Nimi,Vuosi
+5,Bambi,1942
+4,Dumbo,1941
+2,Fantasia,1940
+3,Pinocchio,1940
+1,Lumikki,1937
+
+T11
+sqlite> select distinct etunimi from nimet etunimi;
+etunimi
+Anna
+Pekka
+
+T12
+sqlite> select distinct * from nimet;
+nimet
+Anna	Korhonen
+Pekka	Korhonen
+Pekka	Virtanen
+
+T13
+first create the table
+sqlite> insert into tyontekijat (nimi, palkka) values ('Uolevi', 2500), ('Maija', 3000), ('Liisa', 5000), ('Kaaleppi', 1500);
+
+sqlite> select count(nimi) from tyontekijat;
+4
+
+T14
+sqlite> select count(nimi) from tyontekijat where palkka>2000;
+3
+
+T15
+sqlite> select sum(palkka) from tyontekijat;
+12000
+
+T16
+sqlite> select max(palkka) from tyontekijat;
+5000
+
+T17
+sqlite> select count(distinct(yritys)) from tyontekijat2;
+3
+
+T18
+sqlite> select yritys, count(nimi) from tyontekijat2 group by yritys;
+Amazon|1
+Google|2
+Microsoft|1
+
+T19
+sqlite> select yritys, max(palkka) from tyontekijat2 group by yritys;
+Amazon|2000
+Google|6000
+Microsoft|7500
+
+T20
+sqlite> select yritys, max(palkka) from tyontekijat2 where palkka>=5000 group by yritys;
+Google|6000
+Microsoft|7500
+tai
+sqlite> select yritys, max(palkka) from tyontekijat2 group by yritys having palkka>=5000;
+Google|6000
+Microsoft|7500
+
+T21
+sqlite> select pelaajat.nimi, tulokset.tulos from pelaajat, tulokset where pelaajat.id=tulokset.pelaaja_id;
+nimi,tulos
+Uolevi,250
+Uolevi,300
+Maija,100
+Maija,350
+Kaaleppi,500
+
+
+T22
+sqlite> select pelaajat.nimi, tulokset.tulos from pelaajat, tulokset where pelaajat.id=tulokset.pelaaja_id and pelaajat.nimi='Uolevi';
+nimi,tulos
+Uolevi,250
+Uolevi,300
+
+T23
+sqlite> select pelaajat.nimi, tulokset.tulos from pelaajat, tulokset where pelaajat.id=tulokset.pelaaja_id and tulokset.tulos>250;
+
+#korjaa T24 later!!!!
+T24
+sqlite> select distinct p.nimi,  t.tulos from pelaajat p, tulokset t order by tulos desc, p.nimi;
+nimi,tulos
+Kaaleppi,500
+Maija,500
+Uolevi,500
+Kaaleppi,350
+Maija,350
+Uolevi,350
+Kaaleppi,250
+Maija,250
+Uolevi,250
+Kaaleppi,100
+Maija,100
+Uolevi,100
+
+T25
+sqlite> select distinct p.nimi, max(t.tulos) from pelaajat p, tulokset t where p.id=t.pelaaja_id group by p.nimi order by p.nimi desc;
+nimi,max(t.tulos)
+Uolevi,350
+Maija,350
+Kaaleppi,500
+
+T26
+sqlite> select distinct p.nimi, count(t.tulos) from pelaajat p, tulokset t where p.id=t.pelaaja_id group by p.nimi order by p.nimi desc;
+nimi,count(t.tulos)
+Uolevi,2
+Maija,2
+Kaaleppi,1
+
+T27
+sqlite> select o.nimi, k.nimi, s.arvosana from opiskelijat o, kurssit k, suoritukset s where o.id=k.id and k.id=s.opiskelija_id;
+nimi,nimi,arvosana
+Uolevi,Ohpe,3
+Uolevi,Ohpe,4
+Maija,Ohja,2
+Maija,Ohja,5
+Kaaleppi,Tira,4
+
+
+T28
+so first get the part where k.id equals to s table's kurssi_id. after this from this table get the ones where o.id equals to the s.opiskelija_id. Then select only the rows with the name match
+select k.nimi, s.arvosana from opiskelijat o, kurssit k, suoritukset s where k.id=s.kurssi_id and o.id=s.opiskelija_id and o.nimi='Uolevi';
+nimi,arvosana
+Ohpe,3
+Ohja,4
+
+
+T29
+sqlite> select o.nimi, s.arvosana from opiskelijat o, kurssit k, suoritukset s where k.id=s.kurssi_id and o.id=s.opiskelija_id and k.id=1;
+nimi,arvosana
+Uolevi,3
+Maija,2
+
+
+#ratkaise T30 later!!!!
+T30
+sqlite> select o.nimi, k.nimi, s.arvosana from opiskelijat o, kurssit k, suoritukset s where k.id=s.kurssi_id and o.id=s.opiskelija_id and s.arvosana=4 or s.arvosana=5 group by s.opiskelija_id;
+nimi,nimi,arvosana
+Uolevi,Ohja,4
+Uolevi,Ohpe,5
+Kaaleppi,Tira,4
+
+T31
+sqlite> select o.nimi, count(s.opiskelija_id) from opiskelijat o, kurssit k, suoritukset s where k.id=s.kurssi_id and o.id=s.opiskelija_id  group by s.opiskelija_id;
+nimi,count(s.opiskelija_id)
+Uolevi,2
+Maija,2
+Kaaleppi,1
+
+T32
+sqlite> select o.nimi, max(s.arvosana) from opiskelijat o, kurssit k, suoritukset s where k.id=s.kurssi_id and o.id=s.opiskelija_id  group by s.opiskelija_id;
+nimi,max(s.arvosana)
+Uolevi,4
+Maija,5
+Kaaleppi,4
+
+T33
+sqlite> select distinct k.nimi, k2.nimi from kaupungit k, kaupungit k2, lennot l  where k.id=l.mista_id and k2.id=l.minne_id;
+nimi,nimi
+Helsinki,Tukholma
+Helsinki,Oslo
+Tukholma,Oslo
+Tukholma,Turku
+
+T34
+sqlite> select distinct k.nimi from kaupungit k, lennot l where k.id=l.minne_id and mista_id=1;
+nimi
+Tukholma
+Oslo
+
+T35
+select distinct p.nimi, count(t.tulos) from pelaajat p left join tulokset t on p.id=t.pelaaja_id group by p.id;
+
+T36
+select distinct o.nimi, count(s.arvosana) from opiskelijat o left join suoritukset s on o.id=s.opiskelija_id left join kurssit k on k.id=s.kurssi_id group by o.id;
+
+T37
+select k.nimi, count(s.opiskelija_id) from kurssit k left join suoritukset s on k.id=s.kurssi_id left join opiskelijat o on o.id=s.opiskelija_id group by k.nimi;
+
+T38
+select k.nimi from kurssit k, suoritukset s where k.id = s.kurssi_id group by s.kurssi_id having count(*) >= 1;
+
+#Ratkaise T39!!
+T39
+
+
+T40
+select k.nimi, count(l.mista_id) from kaupungit k left join lennot l on k.id=l.mista_id group by k.nimi;
+
+T41
+select t.hinta*2 from tuotteet t;
+
+T42
+select t.nimi, t.hinta from tuotteet t where t.hinta%2=0;
+
+T43
+select s.sana, length(s.sana) from sanat s;
+
+T44
+select s.sana from sanat s where length(s.sana)<6;
+
+T45
+select s.sana from sanat s order by length(s.sana), s.sana ASC;
+
+T46
+select k.etunimi  || ' ' || k.sukunimi from kayttajat k;
+
+T47
+select sum(length(s.sana)) from sanat s;
+
+T48
+select t.tuote, t.hinta*t.maara from tilaukset t;
+
+
+T49
+select t.tuote, sum(t.hinta*t.maara) from tilaukset t;
+
+
+#solve e.50
+T50
+#this doesnt give the fully correct solution apparently... might need to use case when
+select e.nimi from elokuvat e where e.vuosi%4=0 or e.vuosi%100=0 and e.vuosi%400=0;
+
+case when (e.vuosi % 4 = 0 and e.vuosi % 100 <> 0) or e.vuosi % 400 = 0 then e.nimi from elokuvat e;
+
+select e.nimi from elokuvat e WHERE MOD(e.vuosi,4) = 0 or MOD(e.vuosi, 100) = 0 and MOD(e.vuosi, 400) = 0;
+
+T51
+
+#Now you will need to use subqueries which will do the sub function which is then relayed to the main query
+#best to think of it as the subquery doing the core job
+select t.nimi from tuotteet t where t.hinta=(select min(t.hinta) from tuotteet t);
+
+T52
+select t.nimi from tuotteet t where t.hinta<=(select min(t.hinta)*2 from tuotteet t);
+
+T53
+#EITOIMI
+select t.nimi from tuotteet t where t.hinta!=(select distinct t.hinta from tuotteet t);
+
+T54
+select s.sana from sanat s where s.sana=(select s.sana from sanat s group by s.sana);
+
+T55
+select s.sana from sanat s where s.sana=(select s.sana from sanat s order by s.sana limit 2 offset 1);
+
+#offset tarkoittaa ett hakee toisesta tuotteesta alkaen
+
+T56
+select s.sana from sanat s where s.sana!=(select s.sana from sanat s order by s.sana);
+
+T57
+select s.sana from sanat s where s.sana like '%i%';
+
+T58
+select s.sana from sanat s where s.sana like 'a%';
+
+T59
+
+select s.sana from sanat s where substr(s.sana,2,1)='p' and length(s.sana)=5;
+select s.sana from sanat s where s.sana like '_p_%' and length(s.sana)=5;
+
+T60
+select s.sana from sanat s where s.sana like '%a%a%' and s.sana not like '%a%a%a%';
+
+T61
+select k.tunnus, count(o.kayttaja_id) from kayttajat k left join oikeudet o on o.kayttaja_id=k.id group by k.tunnus;
+
+T62
+select r.nimi, count(ryhma_id) from ryhmat r left join oikeudet o on o.ryhma_id=r.id group by r.nimi;
+
+T63
+select distinct k.tunnus from kayttajat k, oikeudet o inner join ryhmat r on r.id=k.id where o.
+
+T64
+Kun sun pitää käsitellä samaan aikaan kahta eri riviä samasta taulukosta, listaa se taulu kahdesti from-lauseessa.
+
+SELECT K.tunnus FROM Kayttajat K, Oikeudet A, Oikeudet B WHERE  B.kayttaja_id = 1 AND A.ryhma_id = B.ryhma_id AND K.id = A.kayttaja_id GROUP BY K.id;
+
+#Ei toimi!!!
+T65
+SELECT K.tunnus FROM Kayttajat K, Oikeudet A, Oikeudet B WHERE  B.kayttaja_id != 1 AND A.ryhma_id = B.ryhma_id AND K.id = A.kayttaja_id GROUP BY K.id;
+
+T66
+select s.sana from sanat s order by lower(s.sana);
+
+#Ei toimi!!!
+T67
+select t.nimi, min(t.hinta) from tuotteet t order by t.hinta, t.nimi desc;
+
+#EI toimi!!!
+T68
+select t.nimi, (select t1.hinta from tuotteet t1)-t.hinta as erotus from tuotteet t group by t.nimi having count(erotus between -1 and 1);
+sqlite> select A.nimi, count(A.hinta) from Tuotteet A left join Tuotteet B on abs(A.hinta-B.hinta)=1 or abs(B.hinta-A.hinta)=1 group by A.nimi;
+
+T69
+#ideana on ett tuote A verrataan jokaiseen tuotteen b id:hin (samojen ID:den toinen iteraatio) ja katsotaan
+#että millon A on pienempi ku B, sillon tsekkaa ett tuotteiden hintojen summa on 10. Tällä tavoin kaikki
+#tuotteet käydään läpi vain kerran.
+select count(A.hinta) from Tuotteet A, Tuotteet B where A.id<=B.id and A.hinta+B.hinta=10;
+
+T70
+SELECT MIN(c) FROM (SELECT COUNT(*) c FROM Tuotteet GROUP BY hinta);
+SELECT MIN(c) FROM (SELECT COUNT(*) c FROM Tuotteet GROUP BY hinta);
