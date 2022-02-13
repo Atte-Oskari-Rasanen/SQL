@@ -1,0 +1,38 @@
+SQL course stuff
+
+Esim
+CREATE TABLE Tuotteet (id INTEGER PRIMARY KEY, nimi TEXT, hinta INTEGER);
+Jokaisesta sarakkeesta ilmoitetaan nimen lisäksi tyyppi. Tässä taulussa sarakkeet id ja hinta ovat kokonaislukuja (INTEGER) ja sarake nimi on merkkijono (TEXT). Sarake id on lisäksi taulun pääavain (PRIMARY KEY), mikä tarkoittaa, että se yksilöi jokaisen taulun rivin ja voimme viitata sen avulla kätevästi mihin tahansa riviin.
+
+Tietokannan taulun pääavain on jokin sarake (tai sarakkeiden yhdistelmä), joka yksilöi taulun jokaisen rivin eli millään kahdella rivillä ei ole samaa pääavainta
+
+Uuden arvon lisäys:
+INSERT INTO Tuotteet (nimi,hinta) VALUES ('retiisi',7);
+
+show whole table
+SELECT * FROM Tuotteet;
+
+
+Voimme myös järjestää rivejä usealla eri perusteella. Esimerkiksi seuraava kysely järjestää rivit ensisijaisesti kalleimmasta halvimpaan hinnan mukaan ja toissijaisesti aakkosjärjestykseen nimen mukaan:
+
+SELECT * FROM Tuotteet ORDER BY hinta DESC, nimi;
+
+
+Jos kuitenkin haluamme vain erilaiset tulosrivit, voimme lisätä kyselyyn sanan DISTINCT:
+
+SELECT DISTINCT hinta FROM Tuotteet;
+
+
+########
+SQL-kyselyn yleiskuva on seuraava:
+
+SELECT – FROM – WHERE – GROUP BY – HAVING – ORDER BY
+########
+
+#to export table as csv
+sqlite> .mode csv
+sqlite> .output test.csv
+sqlite> select * from tbl1;
+sqlite> .output stdout
+#to import csv as table
+sqlite>.import c:/sqlite/city.csv cities
