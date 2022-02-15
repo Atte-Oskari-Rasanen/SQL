@@ -441,4 +441,9 @@ select a.hinta-b.hinta as erotus from tuotteet a, tuotteet b where erotus>0 orde
 # eli älä laske minimiä jo selectissä koska sillon kysely laskee minimit kaikista mahollisista arvoista ja ottaa niistä pienimmän
 # eli neg. luvun!!! Sen sijaan lasket vaa kaikki minimit ja myöhemmin ryhmittelen group by:lla siten että otat oikeen ja pistät
 # järjestykse asc eli pienemmistä suurimpaa nii saat pienimmä luvun !!!
-# MAXia ei voi käyttää WHERE-osassa. Koska se vaatii parametrikseen tietojoukon (kasan rivejä, joista kaikista poimitaan sama tieto)
+
+
+
+# Ei toimi viel oikein!!
+T71  
+select t.haltija, ifnull((t_a.muutos + t_b.muutos), 0) as saldo from tilit t, tapahtumat t_b left join tapahtumat t_a on t.id=t_a.tili_id and saldo>0 group by t.haltija;
