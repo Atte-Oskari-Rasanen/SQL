@@ -441,3 +441,4 @@ select a.hinta-b.hinta as erotus from tuotteet a, tuotteet b where erotus>0 orde
 # eli älä laske minimiä jo selectissä koska sillon kysely laskee minimit kaikista mahollisista arvoista ja ottaa niistä pienimmän
 # eli neg. luvun!!! Sen sijaan lasket vaa kaikki minimit ja myöhemmin ryhmittelen group by:lla siten että otat oikeen ja pistät
 # järjestykse asc eli pienemmistä suurimpaa nii saat pienimmä luvun !!!
+# MAXia ei voi käyttää WHERE-osassa. Koska se vaatii parametrikseen tietojoukon (kasan rivejä, joista kaikista poimitaan sama tieto)
