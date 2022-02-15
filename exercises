@@ -406,3 +406,38 @@ select count(A.hinta) from Tuotteet A, Tuotteet B where A.id<=B.id and A.hinta+B
 T70
 SELECT MIN(c) FROM (SELECT COUNT(*) c FROM Tuotteet GROUP BY hinta);
 SELECT MIN(c) FROM (SELECT COUNT(*) c FROM Tuotteet GROUP BY hinta);
+
+select min(select count(A.hinta) from Tuotteet A, Tuotteet B where A.hinta-B.hinta) from
+
+order by abs(b.Number - a.Number))
+select a.hinta from Tuotteet A, Tuotteet B where A.id<=B.id order by (a.hinta-b.hinta) limit 1;
+
+SELECT a.hinta - b.hinta = (select min(a.hinta-b.hinta) from tuotteet a, tuotteet b) as erotus FROM Tuotteet A, Tuotteet B
+
+SELECT (select min(a.hinta-b.hinta) from tuotteet a, tuotteet b) as erotus FROM Tuotteet A, Tuotteet B CASE WHEN erotus < 0 THEN 0 ELSE erotus ENDlimit 1;
+
+CASE WHEN i.Quantity < 0 THEN 0 ELSE i.Quantity END
+
+SELECT (select (a.hinta-b.hinta) from tuotteet a, tuotteet b) as erotus FROM Tuotteet A, Tuotteet B where min(erotus) and erotus>0 limit 1;
+
+
+select min(a.hinta) - min(B.hinta) as minimi from Tuotteet A, Tuotteet B where A.id<=B.id limit 1;
+
+#example for inspiration
+SELECT PC.Product_ID, Max(PC.Price) - Min(PC.Price) as PriceVar
+FROM Price_Change PC
+WHERE PC.date >= DATEADD(MONTH, -5, GETDATE())
+  and PC.Product_Id = PCa.Product_Id
+GROUP BY PC.Product_ID
+ORDER BY PriceVar dec
+LIMIT 1
+
+select count(A.hinta) from Tuotteet A, Tuotteet B where min(A.hinta-B.hinta);
+
+
+#This works hyvin :
+select a.hinta-b.hinta as erotus from tuotteet a, tuotteet b where erotus>0 order by erotus asc limit 1;
+
+# eli älä laske minimiä jo selectissä koska sillon kysely laskee minimit kaikista mahollisista arvoista ja ottaa niistä pienimmän
+# eli neg. luvun!!! Sen sijaan lasket vaa kaikki minimit ja myöhemmin ryhmittelen group by:lla siten että otat oikeen ja pistät
+# järjestykse asc eli pienemmistä suurimpaa nii saat pienimmä luvun !!!
