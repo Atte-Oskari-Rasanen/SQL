@@ -23,26 +23,43 @@ CREATE TABLE Trips (id INTEGER PRIMARY KEY, from_id INTEGER REFERENCES Stops, to
 
 '''
 import sqlite3 
+import re
+import os
+os. getcwd()
+path = "/home/atte/Documents/SQL_course" 
+os.chdir(path)
+
 db = sqlite3.connect("bikes.db")
 db.isolation_level = None
 
 def distance_of_user(user):
-    dist = db.execute("select distance from trips where id=?", [user]).fetchone()
-    return dist[0]
+    #dist = db.execute("select distance from trips where user_id=?", [user]).fetchone()
+    dist = db.execute("select sum(t.distance) from trips t, users u where u.name=? and user_id=u.id;", [user]).fetchone()
+    return dist
 
-print(distance_of_user(2))
+print(distance_of_user("user123"))
 
 def speed_of_user(user):
-    speed = db.execute("select round((distance/1000.0)/(duration/60.0),2) from trips where id=?;", [user]).fetchone()
+#    speed = db.execute("select round((distance/1000.0)/(duration/60.0),2) from trips where id=?;", [user]).fetchone()
+    speed = db.execute("select round((sum(distance)/1000.0)/(sum(duration)/60.0),2) from trips t, users u where u.name=? and user_id=u.id;", [user]).fetchone()
     return speed[0]
 
-print(speed_of_user(2))
+print(speed_of_user("user123"))
 
 def duration_in_each_city(day):
-    duration = db.execute("select sum(duration) from trips where day=? group by from_id;", [day]).fetchall()
+    #duration = db.execute("select distinct c.name, sum(duration) from trips t, cities c where c.id=t.to_id and t.day=? group by c.name;", [day]).fetchall()
+    duration = db.execute('select distinct c.name, sum(duration) from trips t, cities c, stops s where s.city_id=t.from_id and t.day=? group by s.name'[day]).fetchone
     return duration[0]
 print(duration_in_each_city("2021-06-20"))
 
 def users_in_city(city):
-    users = db.execute('select count(bike_id) from trips where from_id=?;', [city]).fetchall()
+    #users = db.execute('select count(bike_id) from trips where from_id=?;', [city]).fetchall()
+    #users = db.execute('select distinct count(u.id) from trips t, users u, cities c where u.id=t.user_id and c.name=? and t.to_id=c.id;', [city]).fetchall()
+    users = db.execute('select count (distinct t.user_id) from trips t, stops s, cities c where s.city_id=t.from_id and c.name=?;', [city]).fetchone()
+    #print(users)
+    print(users)
     return users[0]
+print(duration_in_each_city("city4"))
+
+users = db.execute('select count (distinct t.user_id) from trips t, stops s where s.city_id=t.from_id and cities.name =?;', ['city5']).fetchone()
+users[0]
